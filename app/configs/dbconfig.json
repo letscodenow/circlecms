@@ -1,0 +1,11 @@
+{
+  "main": {
+    "dsn": "mysql:host=%s;dbname=%s;charset=%s",
+    "host": "localhost",
+    "dbname": "circlecms",
+    "charset": "utf8",
+
+    "user": "root",
+    "password": "root"
+  }
+}

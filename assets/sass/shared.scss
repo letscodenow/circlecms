@@ -1,0 +1,21 @@
+//=========================
+// Shared Classes
+//=========================
+
+.circlecms-sprite {
+  background: url("../img/db_sprite.png") no-repeat;
+}
+
+.border-box {
+  @include box-sizing(border-box);
+}
+
+.radius-3px {
+  @include radius(3px);
+}
+
+.clearfix:after {
+  content:"";
+  display:table;
+  clear:both;
+} 

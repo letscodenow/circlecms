@@ -1,0 +1,822 @@
+/*******************************************************
+ * Copyright © 2015 Nikita Arkhipov <webtheory.net@gmail.com>
+ *
+ * This file is part of SAE Institute CRUD CMS Assignment.
+ *
+ * SAE Institute CRUD CMS Assignment can not be copied and/or distributed without the express
+ * permission of Nikita Arkhipov
+ *******************************************************/
+
+@import "reset.scss";
+@import "mixins.scss";
+@import "shared.scss";
+@import "db_variables.scss";
+@import "db_typograpy.scss";
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+}
+
+a {
+  text-decoration: none;
+}
+
+//==========================
+// Sign In Form
+//==========================
+
+.signin {
+  background: $secondary-dark;
+
+  .container {
+    width: 260px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -130px;
+    margin-top: -143px;
+  }
+
+  a {
+    @extend .circlecms-sprite;
+    display: block;
+    width: 42px;
+    height: 42px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    color: #FFF;
+    font-size: 20px;
+    font-weight: 200;
+    text-align: center;
+    margin: 24px 0;
+  }
+
+  input {
+    @extend .border-box;
+    @extend .radius-3px;
+    @include placeholder {
+      color: #95a0b9;
+    };
+    width: 100%;
+    border: none;
+    height: 40px;
+    line-height: 40px;
+    background: $primary-dark;
+    padding: 0 10px;
+    text-align: center;
+    color: #FFF;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .submit {
+    @extend .border-box;
+    @extend .radius-3px;
+    @include transition(background .1s);
+    border: solid 2px $primary-dark;
+    display: block;
+    height: 40px;
+    position: relative;
+    cursor: pointer;
+
+    &[data-state="disabled"] {
+      cursor: default;
+    }
+
+    &:before,
+    &:after {
+      content: "";
+      @extend .circlecms-sprite;
+      @include transition(opacity .1s);
+      display: block;
+      width: 17px;
+      height: 14px;
+      background-position: -42px -25px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-left: -8.5px;
+      margin-top: -7px;
+    }
+
+    &[data-state="disabled"]:after,
+    &[data-state="enabled"]:after {
+      background-position: -59px -25px;
+    }
+
+    &[data-state="disabled"]:after,
+    &[data-state="enabled"]:before {
+      opacity: 0;
+    }
+
+    &[data-state="enabled"]:after,
+    &[data-state="disabled"]:before {
+      opacity: 1;
+    }
+
+    &[data-state="enabled"]:hover {
+      background: $primary-dark;
+    }
+  }
+
+  .error {
+    @include transition(opacity .1s);
+    color: #eb5b65;
+    font-size: 14px;
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    opacity: 1;
+
+    &[data-active="false"]{
+      opacity: 0;
+    }
+  }
+}
+
+//==========================
+// Dashboard
+//==========================
+
+.ui-primary-header {
+  @extend .border-box;
+  background: $primary-lightblue;
+  border-bottom: solid 1px $secondary-lightblue;
+  height: 60px;
+  line-height: 60px;
+  position: fixed;
+  top: 0;
+  left: 64px;
+  right: 0;
+  padding: 0 28px 0 28px;
+  min-width: 1160px - 64px;
+  z-index: 999;
+
+  h1 {
+    font-size: 20px;
+    font-weight: 200;
+    display: inline;
+  }
+
+  .ui-btn-primary {
+    position: relative;
+    top: -2px;
+    margin-left: 28px;
+  }
+
+  .actions {
+    float: right;
+    list-style: none;
+    li {
+      float: left;
+    }
+
+    .ui-btn-primary {
+      margin-left: 12px;
+    }
+  }
+
+}
+
+.ui-sidebar {
+  background: $secondary-dark;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 64px;
+  min-height: 600px;
+  ul {
+    list-style: none;
+  }
+}
+
+.circlecms-logo {
+  width: 64px;
+  height: 60px;
+  background: $primary-dark;
+
+  &:before {
+    content: "";
+    @extend .circlecms-sprite;
+    background-position: -42px 0;
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+    margin-left: 20px;
+    margin-top: 18px;
+  }
+
+}
+
+.ui-nav {
+
+  position: relative;
+
+  &:before,
+  &:after {
+    content: "";
+    @extend .circlecms-sprite;
+    @include transition(opacity .15s);
+    opacity: 1;
+    display: inline-block;
+    position: absolute;
+    z-index: 0;
+    top: 0;
+  }
+
+  &:after {
+    opacity: 0;
+  }
+
+  &.active:after {
+    opacity: 1;
+  }
+
+  a {
+    padding: 14px 0;
+    display: block;
+    z-index: 3;
+    position: relative;
+    width: 64px;
+
+    &:before,
+    &:after {
+      @include transition(all 180ms);
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    &:before {
+      content: "";
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 4px 4px 4px 0;
+      border-color: transparent $primary-dark transparent transparent;
+      display: inline-block;
+      position: absolute;
+      right: -8px;
+      top: 50%;
+      margin-top: -4px;
+    }
+
+    &:after {
+      content: attr(data-tooltip);
+      @extend .radius-3px;
+      display: inline-block;
+      background: $primary-dark;
+      color: #FFF;
+      font-size: 13px;
+      line-height: 28px;
+      padding: 0 12px;
+      position: absolute;
+      top: 50%;
+      left: 72px;
+      margin-top: -14px;
+    }
+
+    &:hover:before,
+    &:hover:after, {
+      opacity: 1;
+      visibility: visible;
+    }
+
+  }
+
+  &:hover:after {
+    opacity: 1;
+  }
+
+  &:hover:before {
+    opacity: 0;
+  }
+
+  &.posts {
+    margin-top: 4px;
+    a {
+      height: 20px;
+    }
+    &:before,
+    &:after {
+      background-position: 0 -42px;
+      width: 16px;
+      height: 20px;
+      margin-top: 14px;
+      margin-left: 24px;
+    }
+
+    &:after,
+    &.active {
+      background-position: 0 -62px;
+    }
+
+  }
+
+  &.users {
+    a {
+      height: 14px;
+    }
+    &:before,
+    &:after {
+      background-position: -16px -45px;
+      width: 22px;
+      height: 14px;
+      margin-top: 14px;
+      margin-left: 21px;
+    }
+
+    &:after,
+    &.active {
+      background-position: -16px -65px;
+    }
+  }
+
+  &.media {
+    a {
+      height: 14px;
+      &:before {
+        margin-top: 0;
+      }
+      &:after {
+        margin-top: -10px;
+      }
+    }
+    &:before,
+    &:after {
+      background-position: -38px -42px;
+      width: 20px;
+      height: 20px;
+      margin-top: 14px;
+      margin-left: 22px;
+    }
+
+    &:after,
+    &.active {
+      background-position: -38px -62px;
+    }
+  }
+
+  &.signout {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    a {
+      height: 18px;
+    }
+    &:before,
+    &:after {
+      background-position: -58px -43px;
+      width: 18px;
+      height: 18px;
+      margin-top: 14px;
+      margin-left: 23px;
+    }
+
+    &:after {
+      background-position: -58px -63px;
+    }
+  }
+}
+
+.content {
+  padding: 60px 28px 28px 64px;
+  min-width: 1160px - 64px;
+  height: 100%;
+  position: relative;
+  &.stretched {
+    padding: 60px 0 0 64px;
+  }
+}
+
+
+//==========================
+// New Post
+//==========================
+
+
+.post-content {
+  height: 100%;
+}
+
+.post-window {
+  @extend .border-box;
+  float: left;
+  width: 50%;
+  height: 100%;
+  padding: 28px;
+  &.post-preview {
+    border-left: solid 1px $secondary-lightblue;
+  }
+}
+
+.post-window-title {
+  display: block;
+  color: $tertiary-text;
+  text-transform: uppercase;
+  font-size: 12px;
+  margin-bottom: 26px;
+
+  .md-reference {
+    &:before,
+    &:after {
+      content: "";
+      position: absolute;
+      @extend .circlecms-sprite;
+      @include transition(opacity 200ms);
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      background-position: -52px -83px;
+      vertical-align: top;
+      margin-top: -2px;
+      margin-left: 10px;
+    }
+
+    &:after {
+      opacity: 0;
+      background-position: -52px -99px;
+    }
+
+    &:hover:before {
+      opacity: 0;
+    }
+
+    &:hover:after {
+      opacity: 1;
+    }
+  }
+
+  .counter {
+    float: right;
+  }
+}
+
+.post-markdown-field {
+  display: block;
+  width: 100%;
+  height: 95%;
+  color: $secondary-text;
+  border: none;
+  resize: none;
+  font: 14px/24px "Droid Sans Mono", monospace;
+  @include placeholder {
+    color: $tertiary-text;
+  };
+}
+
+.post-preview-html {
+  font: 15px/28px "Helvetica Neue", Arial, sans-serif;
+  color: $secondary-text;
+  margin-top: -3px;
+  height: 95%;
+  overflow: auto;
+  color: #37424c;
+  word-wrap: break-word;
+
+  h1 {
+    font-size: 30px;
+    margin: 36px 0 28px;
+    font-weight: 200;
+  }
+
+  h2 {
+    font-size: 24px;
+    margin: 28px 0;
+  }
+
+  h3 {
+    margin: 20px 0;
+  }
+
+  p, hr, table, code {
+    margin-bottom: 18px;
+  }
+
+  img {
+    width: 100%;
+  }
+
+}
+
+
+//==========================
+// Dashboard UI Components
+//==========================
+
+
+// Chrome and Firefox align text differently
+
+.chrome .ui-btn-primary {
+  line-height: 31px;
+  &.ui-big {
+    height: 35px;
+    line-height: 35px;
+  }
+}
+
+.firefox .ui-btn-primary {
+  line-height: 30px;
+  &.ui-big {
+    height: 34px;
+    line-height: 34px;
+  }
+}
+
+.ui-btn-primary {
+  @extend .radius-3px;
+  @extend .border-box;
+  @include transition(background 150ms);
+  display: inline-block;
+  line-height: 32px;
+  font-size: 13px;
+  height: 32px;
+  padding: 0 12px;
+  background: $primary-aqua;
+  border: solid 1px $primary-aquadark;
+  cursor: pointer;
+  color: #FFF;
+
+  &:hover {
+    background: $primary-aquahover;
+  }
+
+  &.ui-iconed {
+    padding: 0 10px;
+  }
+
+  &.ui-big {
+    height: 36px;
+    line-height: 36px;
+    padding: 0 12px;
+  }
+
+}
+
+.ui-btn-secondary {
+  @extend .ui-btn-primary;
+  background: #FFF;
+  border-color: $secondary-border;
+  color: $secondary-button;
+
+  a {
+    color: $secondary-button;
+  }
+
+  &:hover {
+    background: #FFF;
+    border-color: $secondary-border-hover;
+    color: $secondary-button-hover;
+  }
+
+}
+
+.ui-icon-add:before {
+  content: "";
+  @extend .circlecms-sprite;
+  width: 18px;
+  height: 18px;
+  background-position: 0 -82px;
+  display: inline-block;
+  position: relative;
+  top: 4px;
+  margin-right: 8px;
+}
+
+.ui-counter {
+  float: right;
+  font-size: 13px;
+  color: $primary-text;
+}
+
+.chrome .ui-counter {
+  padding-top: 1px;
+}
+
+.ui-input-title {
+  @extend .border-box;
+  width: 100%;
+  border: none;
+  border-bottom: solid 1px $secondary-lightblue;
+  height: 66px;
+  line-height: 66px;
+  padding: 0 28px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #37424c;
+  @include placeholder {
+    color: #808f9e;
+  };
+}
+
+.ui-table {
+  margin: 16px 0 28px 28px;
+  width: 97.6%;
+
+  tr {
+    height: 52px;
+    &:nth-child(odd) {
+      background: #f5f7f9;
+    }
+  }
+
+  tr.ui-table-header {
+    background: #FFF;
+  }
+
+  td.deleted {
+    text-align: center;
+  }
+
+  .undo {
+    color: $link;
+    border-bottom: dotted 1px $link;
+    cursor: pointer;
+
+    &:hover {
+      color: $link-hover;
+      border-bottom: dotted 1px $link-hover;
+    }
+
+  }
+
+  td, th {
+    padding: 0 12px;
+  }
+
+  th {
+    text-align: left;
+    font-size: 16px;
+    font-weight: 400;
+    border-bottom: solid 1px $secondary-lightblue;
+
+  }
+
+
+  td {
+    font-size: 14px;
+    color: $secondary-text;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 0;
+
+    &:first-child a {
+      color: $link;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    li {
+      float: left;
+      margin-right: 12px;
+      position: relative;
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+    }
+
+    .view:before,
+    .edit:before,
+    .delete:before,
+    .view:after,
+    .edit:after,
+    .delete:after {
+      content: "";
+      @extend .circlecms-sprite;
+      @include transition(opacity 150ms);
+      display: inline-block;
+      height: 14px;
+      position: absolute;
+      left: 11px;
+      top: 9px;
+    }
+
+    .view:after,
+    .edit:after,
+    .delete:after {
+      opacity: 0;
+    }
+
+    .view:hover:after,
+    .edit:hover:after,
+    .delete:hover:after {
+      opacity: 1;
+    }
+
+    .view:hover:before,
+    .edit:hover:before,
+    .delete:hover:before {
+      opacity: 0;
+    }
+
+    .view {
+      padding-left: 38px;
+    }
+
+    .view:before {
+      background-position: 0 -100px;
+      width: 20px;
+    }
+
+    .view:after {
+      background-position: 0 -114px;
+      width: 20px;
+    }
+
+    .edit {
+      padding-left: 32px;
+    }
+
+    .edit:before {
+      background-position: -20px -100px;
+      width: 14px;
+    }
+
+    .edit:after {
+      background-position: -20px -114px;
+      width: 14px;
+    }
+
+    .delete {
+      padding-left: 32px;
+    }
+
+    .delete:before,
+    .delete:after {
+      top: 8px;
+      left: 10px;
+      width: 13px;
+    }
+
+    .delete:before {
+      background-position: -34px -100px;
+    }
+
+    .delete:after {
+      background-position: -34px -114px;
+    }
+
+    @media (max-width: 1260px) {
+      .view:before,
+      .edit:before,
+      .delete:before,
+      .view:after,
+      .edit:after,
+      .delete:after {
+        display: none;
+      }
+
+      .view,
+      .edit,
+      .delete {
+        padding-left: 10px;
+      }
+    }
+
+  }
+}
+
+.load-more {
+  text-align: center;
+
+  .loaded {
+    font-size: 14px;
+    color: $secondary-text;
+  }
+}
+
+
+
+#load-more {
+
+  &:before {
+    content: "";
+    @extend .circlecms-sprite;
+    display: inline-block;
+    width: 12px;
+    height: 16px;
+    background-position: -18px -83px;
+    position: relative;
+    top: 3px;
+    margin-right: 8px;
+  }
+
+  margin: 14px auto 30px;
+  text-align: center;
+}
